@@ -1,0 +1,336 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Dental Creación — sistema de diseño
+   --------------------------------------------------------------------------
+   Dirección: "conservar, no reemplazar". La paleta evita el azul clínico
+   genérico del sector y se apoya en materiales reales del consultorio:
+   hueso/marfil (esmalte dental), verde quirófano (herencia quirúrgica) y
+   oro apagado (la restauración conservadora que dura décadas).
+
+   PENDIENTE: cuando el cliente entregue el logo real, extraer sus tonos y
+   ajustar --color-quirofano / --color-oro aquí. Verificar contraste AA
+   contra --color-hueso antes de reemplazar (ver notas de ratio abajo).
+   ========================================================================== */
+
+@theme {
+  /* Color — ratios verificados contra --color-hueso (#F7F4EE) */
+  --color-hueso:          #F7F4EE;  /* base de página */
+  --color-marfil:         #EAE4D8;  /* superficies alternas */
+  --color-marfil-hondo:   #DED6C5;  /* bordes de superficie alterna */
+  --color-quirofano:      #16342C;  /* tinta principal · 12.3:1 */
+  --color-quirofano-alto: #245043;  /* hover de superficies oscuras */
+  --color-salvia:         #4F7365;  /* texto secundario · 4.8:1 */
+  --color-oro:            #A8863F;  /* acento decorativo · 3.1:1 (no texto pequeño) */
+  --color-oro-texto:      #7A5F26;  /* acento en texto · 5.5:1 */
+  --color-tinta:          #1C2621;  /* cuerpo de texto · 11.9:1 */
+  --color-humo:           #5A6A63;  /* texto atenuado · 5.2:1 */
+  --color-linea:          #DCD5C6;  /* hairlines */
+
+  /* Tipografía — Newsreader (display, editorial) + Karla (cuerpo, humanista) */
+  --font-display: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans:    "Karla", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* Escala de display */
+  --text-hero:      clamp(2.6rem, 6.2vw, 5rem);
+  --text-hero--line-height: 1.02;
+  --text-seccion:   clamp(1.9rem, 3.4vw, 3rem);
+  --text-seccion--line-height: 1.1;
+
+  --radius-suave: 0.75rem;
+  --radius-carta: 1rem;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* compensa el header fijo al saltar a un ancla */
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    background-color: var(--color-hueso);
+    color: var(--color-tinta);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    color: var(--color-quirofano);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  /* Foco visible y consistente en todo el sitio (requisito de accesibilidad) */
+  :where(a, button, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-quirofano);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* El navegador de Safari/iOS agranda el texto en landscape sin esto */
+  @media screen and (max-width: 640px) {
+    html { -webkit-text-size-adjust: 100%; }
+  }
+}
+
+/* ==========================================================================
+   Componentes
+   ========================================================================== */
+@layer components {
+
+  .contenedor {
+    width: 100%;
+    max-width: 74rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .contenedor { padding-inline: 2rem; }
+  }
+
+  /* --- Etiqueta de sección ------------------------------------------------ */
+  .cejilla {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-oro-texto);
+  }
+  .cejilla::before {
+    content: "";
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.55;
+  }
+
+  /* --- Botones ------------------------------------------------------------ */
+  .boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.95rem 1.6rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1;
+    text-decoration: none;
+    transition: transform 180ms ease, background-color 180ms ease,
+                border-color 180ms ease, color 180ms ease;
+    /* objetivo táctil mínimo de 44px */
+    min-height: 2.75rem;
+  }
+  .boton:active { transform: translateY(1px); }
+
+  .boton-primario {
+    background: var(--color-quirofano);
+    color: var(--color-hueso);
+    border: 1px solid var(--color-quirofano);
+  }
+  .boton-primario:hover { background: var(--color-quirofano-alto); border-color: var(--color-quirofano-alto); }
+
+  .boton-secundario {
+    background: transparent;
+    color: var(--color-quirofano);
+    border: 1px solid var(--color-linea);
+  }
+  .boton-secundario:hover { border-color: var(--color-quirofano); background: rgb(22 52 44 / 0.04); }
+
+  /* --- Superficies -------------------------------------------------------- */
+  .carta {
+    background: var(--color-hueso);
+    border: 1px solid var(--color-linea);
+    border-radius: var(--radius-carta);
+    padding: 1.6rem;
+    transition: border-color 200ms ease, transform 200ms ease;
+  }
+  .carta:hover { border-color: var(--color-oro); transform: translateY(-2px); }
+
+  .carta-servicio :is(h3, h4) {
+    font-size: 1.08rem;
+    line-height: 1.3;
+    margin-bottom: 0.4rem;
+  }
+  .carta-servicio p {
+    font-size: 0.925rem;
+    color: var(--color-humo);
+    line-height: 1.55;
+  }
+
+  /* Objetivo táctil mínimo de 24px en enlaces sueltos (WCAG 2.2 · 2.5.8).
+     Los enlaces dentro de un párrafo quedan exentos por la propia norma,
+     pero los de listas y pies de sección sí cuentan como objetivos discretos. */
+  footer li > a,
+  .enlaces-contacto a,
+  .enlace-destacado {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5rem;
+  }
+
+  /* Marca los bloques que aún esperan contenido real del cliente */
+  .marcador-pendiente {
+    border: 1px dashed var(--color-marfil-hondo);
+    border-radius: var(--radius-carta);
+    background: rgb(234 228 216 / 0.35);
+  }
+
+  /* --- Encabezado de sección ---------------------------------------------- */
+  .titulo-seccion {
+    font-size: var(--text-seccion);
+    line-height: 1.1;
+    max-width: 22ch;
+  }
+  .entrada-seccion {
+    color: var(--color-humo);
+    font-size: 1.05rem;
+    max-width: 56ch;
+    margin-top: 0.9rem;
+  }
+
+  /* ======================================================================
+     FIRMA — "Las tres capas"
+     Corte anatómico del diente que se ilumina capa por capa conforme
+     avanza el scroll. Es la pieza que carga el argumento de venta:
+     conservar esmalte y dentina evita tratamientos más invasivos.
+     ====================================================================== */
+  .capa {
+    transition: opacity 500ms ease, stroke-width 500ms ease, fill-opacity 500ms ease;
+  }
+  .capa-trazo {
+    fill: none;
+    stroke: var(--color-salvia);
+    stroke-width: 1.25;
+    opacity: 0.28;
+  }
+  .capa-relleno {
+    fill: var(--color-oro);
+    fill-opacity: 0;
+  }
+
+  /* estado activo, conmutado por JS al cruzar cada capítulo */
+  .capa.esta-activa .capa-trazo {
+    stroke: var(--color-quirofano);
+    stroke-width: 2.1;
+    opacity: 1;
+  }
+  .capa.esta-activa .capa-relleno { fill-opacity: 0.16; }
+
+  .paso-capa {
+    border-left: 2px solid var(--color-linea);
+    padding-left: 1.5rem;
+    transition: border-color 400ms ease, opacity 400ms ease;
+    opacity: 0.45;
+  }
+  .paso-capa.esta-activa {
+    border-color: var(--color-oro);
+    opacity: 1;
+  }
+  .paso-capa h3 { font-size: 1.5rem; line-height: 1.15; }
+
+  /* --- Anillos de los 30 años (motivo ambiental del hero) ------------------ */
+  .anillos { animation: girar-anillos 90s linear infinite; transform-origin: 50% 50%; }
+  .anillos-inverso { animation: girar-anillos 130s linear infinite reverse; transform-origin: 50% 50%; }
+
+  /* --- Acordeón de preguntas ---------------------------------------------- */
+  .pregunta {
+    border-bottom: 1px solid var(--color-linea);
+  }
+  .pregunta summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    cursor: pointer;
+    padding: 1.35rem 0;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--color-quirofano);
+    list-style: none;
+  }
+  .pregunta summary::-webkit-details-marker { display: none; }
+  .pregunta summary .cruz {
+    flex: none;
+    transition: transform 250ms ease;
+    color: var(--color-oro-texto);
+  }
+  .pregunta[open] summary .cruz { transform: rotate(45deg); }
+  .pregunta .respuesta {
+    padding-bottom: 1.35rem;
+    color: var(--color-humo);
+    max-width: 62ch;
+  }
+
+  /* --- Botón flotante de WhatsApp ----------------------------------------- */
+  .whatsapp-flotante {
+    position: fixed;
+    right: 1.1rem;
+    bottom: 1.1rem;
+    z-index: 50;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.25rem;
+    border-radius: 999px;
+    background: var(--color-quirofano);
+    color: var(--color-hueso);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    box-shadow: 0 8px 28px rgb(22 52 44 / 0.28);
+    transform: translateY(150%);
+    transition: transform 320ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .whatsapp-flotante.se-ve { transform: translateY(0); }
+  .whatsapp-flotante:hover { background: var(--color-quirofano-alto); }
+
+  /* --- Revelado al hacer scroll ------------------------------------------- */
+  .revelar {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 650ms ease, transform 650ms ease;
+  }
+  .revelar.se-ve { opacity: 1; transform: none; }
+}
+
+/* ==========================================================================
+   Animaciones
+   ========================================================================== */
+@keyframes girar-anillos {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Preferencia de movimiento reducido — se respeta en todo el sitio
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .revelar { opacity: 1; transform: none; }
+  .whatsapp-flotante { transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Impresión — el paciente que imprime quiere dirección, horario y teléfono
+   ========================================================================== */
+@media print {
+  .no-imprimir { display: none !important; }
+  body { background: #fff; color: #000; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.75em; }
+}
